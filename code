@@ -1,0 +1,74 @@
+const int IN1 = 2;
+const int IN2 = 3;
+const int IN3 = 4;
+const int IN4 = 5;
+const int TRIG = 7;
+const int ECHO = 8;
+
+long duration;
+int distance;
+
+void setup() {
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(TRIG, OUTPUT);
+  pinMode(ECHO, INPUT);
+  Serial.begin(9600);
+}
+void loop() {
+
+  distance = getDistance();)
+  if (distance <= 30) {
+    Serial.println("OBJECT_NEAR"); 
+    if (Serial.available()) {
+      String response = Serial.readStringUntil('\n');
+      response.trim();
+
+      if (response == "TRASH") {
+        pickUpTrash();
+      } else if (response == "NOT_TRASH") {
+        moveForward();
+      }
+    }
+  } else 
+    moveForward();
+  }
+
+  delay(100);
+}
+int getDistance() {
+  digitalWrite(TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG, LOW);
+  duration = pulseIn(ECHO, HIGH);
+  return duration * 0.034 / 2;  // см
+}
+void moveForward() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+void stopRobot() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
+void pickUpTrash() {
+  stopRobot();
+  delay(500);
+  servo.write(90);
+  delay(1000);
+  servo.write(0)
+  moveToCollectionPoint();
+}
+void moveToCollectionPoint() {
+  moveForward();
+  delay(5000);
+  stopRobot();
+}
